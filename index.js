@@ -20,7 +20,8 @@ app.use(cookieParser());
 
 // Allow specific frontend domain
 const allowedOrigins = [
-  "https://estate-real-project.netlify.app",
+  // "https://estate-real-project.netlify.app",
+  "https://estatefrontend.netlify.app",
   "http://localhost:5173",
 ];
 
