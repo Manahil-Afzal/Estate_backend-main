@@ -18,11 +18,9 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Allow specific frontend domain
 const allowedOrigins = [
-  // "https://estate-real-project.netlify.app",
-  "https://estatefrontend.netlify.app",
-  "http://localhost:5173",
+  "http://localhost:5173",             // local frontend
+  "https://estatefrontend.netlify.app" // deployed frontend
 ];
 
 app.use(cors({
@@ -53,15 +51,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB connected");
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
+if (process.env.NODE_ENV !== "production") {
+  mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log("MongoDB connected");
+      const PORT = process.env.PORT || 5000;
+      app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    })
+    .catch((err) => {
+      console.error("MongoDB connection error:", err);
+    });
+}
 
 export default app;
