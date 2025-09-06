@@ -52,8 +52,8 @@ export const signin = async (req, res, next) => {
 export const google = async (req, res) => {
   try {
     const { name, email, photo } = req.body;
-
     let user = await User.findOne({ email });
+
     if (!user) {
       user = await User.create({ username: name, email, photo });
     }
@@ -65,6 +65,7 @@ export const google = async (req, res) => {
       photo: user.photo,
     });
   } catch (err) {
+    console.error("Google login failed:", err);
     res.status(500).json({ message: "Google login failed", error: err.message });
   }
 };
