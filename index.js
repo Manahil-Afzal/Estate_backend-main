@@ -78,38 +78,37 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://estatefrontend.netlify.app"
 ];
-
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-// ✅ Routers
+// Routers
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/listing", listingRouter);
 
-// ✅ Simple public test route (health check)
+// Health check
 app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "Backend + DB alive 🚀" });
 });
 
-// Default root
+// Root route
 app.get("/", (req, res) => res.send("Backend is running!"));
 
-// ✅ Global error handler
+// Global error handler
 app.use((err, req, res, next) => {
   console.error("Error:", err.message || err);
-  res
-    .status(err.statusCode || 500)
-    .json({ success: false, message: err.message || "Internal Server Error" });
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
 });
 
-// ✅ Connect to MongoDB, then start server
-mongoose.connect(process.env.MONGO_URI, { 
-  useNewUrlParser: true, 
-  useUnifiedTopology: true 
+// DB connect
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 })
-.then(() => {
-  console.log("MongoDB connected ✅");
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-})
+.then(() => console.log("MongoDB connected ✅"))
 .catch(err => console.error("MongoDB connection failed ❌", err));
+
+// 👇 IMPORTANT: export app (don’t call app.listen)
+export default app;
